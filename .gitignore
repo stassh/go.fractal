@@ -14,3 +14,7 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 apps/fractal/output.png
+apps/fractal/fractal
+go.code-workspace
+.vscode/settings.json
+apps/fractal/output1.png
