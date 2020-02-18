@@ -1,0 +1,14 @@
+syntax = "proto3";
+package entity;
+
+message FractalInfo {
+  Rectangle rectangle = 1;
+}
+
+message Rectangle {
+  double top = 1;
+  double bottom = 2;
+
+  double left = 3;
+  double right = 4;
+}

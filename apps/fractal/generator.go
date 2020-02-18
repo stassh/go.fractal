@@ -1,12 +1,17 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
+	"fractal/entity"
 	"image"
 	"image/color"
 	"image/draw"
+	"log"
 	"math"
 	"net/url"
+
+	proto "github.com/golang/protobuf/proto"
 )
 
 func GenerateFractalImage(imageMaxX int, imageMaxY int, b Borders) image.Image {
@@ -80,12 +85,39 @@ func getFragmet(b Borders, i int, j int, maxI int, maxJ int) Borders {
 
 }
 
+func parseProto(value string) Borders {
+
+	fractalInfo := entity.FractalInfo{}
+	bytes, _ := base64.StdEncoding.DecodeString(value)
+
+	if err := proto.Unmarshal(bytes, &fractalInfo); err != nil {
+		log.Fatalln("Failed to parse fractal info:", err)
+	}
+
+	return Borders{X1: fractalInfo.Rectangle.Left, X2: fractalInfo.Rectangle.Right, Y1: fractalInfo.Rectangle.Bottom, Y2: fractalInfo.Rectangle.Top}
+
+}
+
 func getParams(b Borders) string {
 	params := url.Values{}
 	params.Add("x1", fmt.Sprintf("%f", b.X1))
 	params.Add("x2", fmt.Sprintf("%f", b.X2))
 	params.Add("y1", fmt.Sprintf("%f", b.Y1))
 	params.Add("y2", fmt.Sprintf("%f", b.Y2))
+
+	info := entity.FractalInfo{}
+	info.Rectangle = &entity.Rectangle{Top: b.Y2, Bottom: b.Y1, Left: b.X1, Right: b.X2}
+
+	log.Printf("Fractal info: %v", info)
+
+	infoProto, err := proto.Marshal(&info)
+	if err != nil {
+		log.Fatal("marshaling error: ", err)
+	}
+	log.Printf("Fractal info: %v", infoProto)
+
+	protoInfo := base64.StdEncoding.EncodeToString(infoProto)
+	params.Add("p", protoInfo)
 
 	return params.Encode()
 }
