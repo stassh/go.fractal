@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "apps\\fractal"
+		},
+		{
+			"path": "apps\\fractal-ui"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

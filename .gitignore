@@ -18,3 +18,8 @@ apps/fractal/fractal
 go.code-workspace
 .vscode/settings.json
 apps/fractal/output1.png
+**/node_modules
+
+apps/my-app
+apps/fractal/static/main.js
+apps/fractal/static/main.js.map
