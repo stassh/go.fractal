@@ -1,0 +1,50 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "file-header": [
+      true,
+      "@\\d{4}",
+      "@2018 Stanislav Shabalin"
+    ],
+    "max-classes-per-file": {
+      "options": [
+        2
+      ]
+    },
+    "no-default-export": true,
+    "no-submodule-imports": {
+      "options": [
+        "tsutils"
+      ]
+    },
+    "restrict-plus-operands": true,
+    "strict-boolean-expressions": true,
+    "max-line-length": {
+      "options": [
+        120
+      ]
+    },
+    "new-parens": true,
+    "no-arg": true,
+    "no-bitwise": true,
+    "no-conditional-assignment": true,
+    "no-consecutive-blank-lines": false,
+    "curly": true,
+    "no-var-requires": true,
+    "await-promise": true,
+    "no-var-keyword": true,
+    "quotemark": [true, "double", "jsx-double"],
+    "no-trailing-whitespace": true,
+    "no-console": {
+      "severity": "warning",
+      "options": [
+        "debug",
+        "info",
+        "log",
+        "time",
+        "timeEnd",
+        "trace"
+      ]
+    }
+  }
+}
