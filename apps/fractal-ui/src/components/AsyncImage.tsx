@@ -7,11 +7,12 @@ import * as React from "react";
 export interface AsyncImageProps { src: string; alt: string }
 export interface AsyncImageState { loaded: boolean; error: boolean }
 
-// https://i.imgur.com/R5TraVR.png
+const ImageLazy = React.lazy(() => import("./Image"));
 
 export class AsyncImage extends React.Component<AsyncImageProps, AsyncImageState> {
-  props: AsyncImageProps
-  state: AsyncImageState
+
+  private renderLoader = () => <div className="loader"><img src="https://dummyimage.com/80x80/000/fff" alt="loading"/></div>;
+
 
   constructor(props: AsyncImageProps) {
     super(props);
@@ -23,13 +24,12 @@ export class AsyncImage extends React.Component<AsyncImageProps, AsyncImageState
 
   render() {
 
-    return <img
-      // className={this.props.className}
-
-      src={this.props.src}
-      alt={this.props.alt} />
+    return (
+      <React.Suspense fallback={this.renderLoader()}>
+        <ImageLazy src={this.props.src} alt={this.props.alt} />
+      </React.Suspense>
+    )
   }
-
 }
 
 export default AsyncImage

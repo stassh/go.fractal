@@ -9,10 +9,13 @@ import (
 	"fractal/types"
 	"fractal/util"
 	"html/template"
+	"image"
 	"image/png"
 	"log"
 	"net/http"
+	"time"
 
+	"strconv"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -23,6 +26,8 @@ func handleRequests() {
 	router := mux.NewRouter()
 	// CRUD
 	router.HandleFunc("/image", getImage).Methods("get")
+
+	router.HandleFunc("/tile", getTile).Methods("get")
 
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 
@@ -41,6 +46,48 @@ func getImage(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(Character{Name: "Stas"})
 	log.Printf("Successfully getImage with ")
 
+}
+
+func getTile(w http.ResponseWriter, r *http.Request) {
+	log.Printf("getTile start")
+
+	// for debug React.lazy
+	time.Sleep(2 * time.Second)
+
+	width, ok := r.URL.Query()["width"]
+	if !ok || len(width[0]) < 1 {
+		util.HandleError(w, "Param is not provided")
+	}
+
+	height, ok := r.URL.Query()["height"]
+	if !ok || len(height[0]) < 1 {
+		util.HandleError(w, "Param is not provided")
+	}
+
+	imageMaxX, _ := strconv.Atoi(width[0])
+	imageMaxY, _ := strconv.Atoi(height[0])
+
+	b := Borders{X1: -2.5, X2: 2.5, Y1: -2.5, Y2: 2.5}
+
+	img := GenerateFractalImage(imageMaxX, imageMaxY, b)
+
+	writeImageToResponse(w, &img)
+	log.Printf("Successfully getTile")
+
+}
+
+func writeImageToResponse(w http.ResponseWriter, img *image.Image) {
+
+	buffer := new(bytes.Buffer)
+	if err := png.Encode(buffer, *img); err != nil {
+		log.Println("unable to encode image.")
+	}
+
+	w.Header().Set("Content-Type", "image/png")
+	w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
+	if _, err := w.Write(buffer.Bytes()); err != nil {
+		log.Println("unable to write image.")
+	}
 }
 
 func siteRootHandler(w http.ResponseWriter, r *http.Request) {
